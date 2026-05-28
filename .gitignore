@@ -1,0 +1,35 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+.python-version
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+gcp-key.json
+*.key
+*.pem
+.env
+
+# Logs
+*.log
+
+# Dataflow staging
+dataflow/staging/
+dataflow/temp/
+
+# Airflow local
+airflow_local/
+
+# Byte-compiled
+*.egg

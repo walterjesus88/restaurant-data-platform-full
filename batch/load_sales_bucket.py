@@ -1,0 +1,72 @@
+from google.cloud import storage
+from google.cloud import bigquery
+import pandas as pd
+from io import BytesIO
+
+from config import PROJECT_ID, BUCKET_NAME, SALES_FILE, TABLE_SALES_STAGING
+
+FILE_NAME = SALES_FILE
+
+TABLE_ID = TABLE_SALES_STAGING
+
+
+# BIGQUERY
+
+bq_client = bigquery.Client()
+
+# TRUNCATE STAGING
+
+truncate_query = """
+TRUNCATE TABLE
+`sales_analytics.sales_staging`
+"""
+
+bq_client.query(
+    truncate_query
+).result()
+
+print(
+    "sales_staging truncated"
+)
+
+
+storage_client = storage.Client()
+
+bucket = storage_client.bucket(
+    BUCKET_NAME
+)
+
+blob = bucket.blob(FILE_NAME)
+
+data = blob.download_as_bytes()
+
+df = pd.read_csv(
+    BytesIO(data)
+)
+
+df["fecha"] = pd.to_datetime( df["fecha"] ).dt.date
+
+# VALIDACIONES
+
+df = df.dropna()
+
+df = df[df["total"] >= 0]
+
+df = df.drop_duplicates()
+
+print(df.head())
+
+# BIGQUERY
+
+bq_client = bigquery.Client()
+
+job = bq_client.load_table_from_dataframe(
+    df,
+    TABLE_ID
+)
+
+job.result()
+
+print(
+    "Sales loaded successfully"
+)

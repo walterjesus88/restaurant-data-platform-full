@@ -1,0 +1,33 @@
+[
+  {
+    "pedido_id": 1001,
+    "estado": "ENTREGADO",
+    "fecha_evento": "2026-05-01T10:15:00",
+    "monto": 45.5
+  },
+  {
+    "pedido_id": 1002,
+    "estado": "PREPARANDO",
+    "fecha_evento": "2026-05-01T10:20:00",
+    "monto": 60.0
+  },
+  {
+    "pedido_id": 1003,
+    "estado": "CANCELADO",
+    "fecha_evento": "2026-05-01T10:25:00",
+    "monto": 25.0
+  },
+  {
+    "pedido_id": 1004,
+    "estado": "ENTREGADO",
+    "fecha_evento": "2026-05-01T10:30:00",
+    "monto": 80.5
+  },
+  {
+    "pedido_id": 1005,
+    "estado": "EN_CAMINO",
+    "fecha_evento": "2026-05-01T10:35:00",
+    "monto": 35.0
+  }
+]
+

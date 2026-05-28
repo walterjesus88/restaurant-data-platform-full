@@ -1,0 +1,61 @@
+name: Data Engineering CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  ci:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: pytest tests/
+
+  cd:
+
+    needs: ci
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Setup GCloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Upload DAGs
+        run: |
+          gsutil cp dags/* ${{ secrets.COMPOSER_BUCKET }}/dags/
+
+      - name: Upload SQL
+        run: |
+          gsutil cp sql/* ${{ secrets.SQL_BUCKET }}/
+
+      - name: Deploy Batch
+        run: |
+          gsutil cp batch/* ${{ secrets.BATCH_BUCKET }}/

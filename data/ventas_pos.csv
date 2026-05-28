@@ -1,0 +1,18 @@
+fecha,tienda,producto,cantidad,total
+2026-05-01,Miraflores,Hamburguesa,3,90
+2026-05-01,San Isidro,Pizza,2,70
+2026-05-01,Surco,Ensalada,1,25
+2026-05-02,Miraflores,Hamburguesa,4,120
+2026-05-02,San Isidro,Tacos,5,150
+2026-05-02,Surco,Pizza,2,80
+2026-05-03,Miraflores,Hot Dog,6,90
+2026-05-03,San Isidro,Hamburguesa,3,90
+2026-05-03,Surco,Tacos,4,120
+2026-05-04,Miraflores,Pizza,2,70
+2026-05-04,San Isidro,Ensalada,3,75
+2026-05-04,Surco,Hot Dog,5,75
+2026-05-05,Miraflores,Tacos,4,120
+2026-05-05,San Isidro,Pizza,1,35
+2026-05-05,Surco,Hamburguesa,2,60
+2026-05-27,Miraflores,Hot Dog, 5,12
+2026-05-28,Miraflores,Hot Dog, 5,4
