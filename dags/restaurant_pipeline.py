@@ -1,32 +1,3 @@
-# from airflow import DAG
-# from airflow.operators.bash import BashOperator
-# from datetime import datetime
-
-# default_args = {
-#     "owner": "data-engineering",
-#     "start_date": datetime(2026, 1, 1)
-# }
-
-# with DAG(
-#     dag_id="restaurant_batch_pipeline",
-#     default_args=default_args,
-#     schedule="@daily",
-#     catchup=False
-# ) as dag:
-
-#     load_staging = BashOperator(
-#         task_id="load_staging",
-#         bash_command="python batch/load_sales.py"
-#     )
-
-#     run_incremental = BashOperator(
-#         task_id="run_incremental",
-#         bash_command="bq query --use_legacy_sql=false < sql/incremental.sql"
-#     )
-
-#     load_staging >> run_incremental
-
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from datetime import datetime
@@ -47,6 +18,21 @@ with DAG(
     catchup=False,
     description="Batch pipeline for sales and inventory"
 ) as dag:
+
+    # =========================
+    # CREATE TABLES IF NOT EXISTS
+    # =========================
+
+    create_tables = BashOperator(
+        task_id="create_tables",
+        bash_command=(
+            "bq query --use_legacy_sql=false "
+            "< sql/create_tables.sql && "
+            "bq query --use_legacy_sql=false "
+            "< sql/warehouse_model.sql"
+        ),
+        cwd=str(DAG_FOLDER)
+    )
 
     # =========================
     # LOAD SALES CSV
@@ -128,9 +114,9 @@ with DAG(
     # PIPELINE FLOW
     # =========================
 
-    load_sales_staging >> incremental_sales
+    create_tables >> load_sales_staging >> incremental_sales
 
-    load_inventory_staging >> incremental_inventory
+    create_tables >> load_inventory_staging >> incremental_inventory
 
     [
         incremental_sales,

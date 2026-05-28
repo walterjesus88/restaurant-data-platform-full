@@ -104,3 +104,63 @@ gcloud dataflow jobs cancel --project=realtime-sales-pipeline --region=us-centra
 
 ## consulta bigquery
 bq query --use_legacy_sql=false "SELECT * FROM sales_analytics.delivery_realtime ORDER BY created_at DESC LIMIT 10"
+
+## Crear el Composer
+gcloud composer environments create restaurant-composer --project=realtime-sales-pipeline   --location=us-central1 --environment-size=small --python-version=3.11 --scheduler-count=1 --worker-count=1
+
+## obtiene el bucket del composer
+gcloud composer environments describe restaurant-composer --project=realtime-sales-pipeline --location=us-central1 --format="value(config.dagGcsPrefix)"
+Y guardarlo como COMPOSER_BUCKET en GitHub Secrets (Settings > Secrets and variables > Actions), junto con GCP_CREDENTIALS.
+
+result: gs://us-central1-restaurant-comp-74c72f4f-bucket/dags
+
+## subes el dag
+gsutil cp dags/restaurant_pipeline.py gs://us-central1-restaurant-comp-74c72f4f-bucket/dags  
+
+gcloud storage cp dags/restaurant_pipeline.py gs://us-central1-restaurant-comp-74c72f4f-bucket/dags/restaurant_pipeline.py
+
+gcloud storage cp sql/analytics_views.sql gs://us-central1-restaurant-comp-74c72f4f-bucket/dags/sql/analytics_views.sql
+
+## truncate
+bq query --use_legacy_sql=false "
+TRUNCATE TABLE sales_analytics.sales_staging;
+TRUNCATE TABLE sales_analytics.sales_final;
+TRUNCATE TABLE sales_analytics.inventory_staging;
+TRUNCATE TABLE sales_analytics.inventory_final;
+TRUNCATE TABLE sales_analytics.delivery_realtime;
+TRUNCATE TABLE sales_analytics.fact_sales;
+DELETE FROM sales_analytics.dim_store WHERE TRUE;
+DELETE FROM sales_analytics.dim_product WHERE TRUE;
+DELETE FROM sales_analytics.dim_date WHERE TRUE;
+"
+
+## suir dag 
+gcloud storage cp dags/restaurant_pipeline.py gs://us-central1-restaurant-comp-74c72f4f-bucket/dags/
+gcloud storage cp sql/populate_star_schema.sql gs://us-central1-restaurant-comp-74c72f4f-bucket/dags/sql/
+gcloud storage cp sql/analytics_views.sql gs://us-central1-restaurant-comp-74c72f4f-bucket/dags/sql/
+
+
+## Para el CI/CD
+## Paso 1 — Crear una key del service account
+gcloud iam service-accounts keys create ~\gcp-key.json --iam-account=275517521418-compute@developer.gserviceaccount.com --project=realtime-sales-pipeline
+## Paso 2 — Inicializar git y subir a GitHub
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/TU_USUARIO/TU_REPO.git
+git push -u origin main
+(Pon tu usuario y nombre del repo)
+Paso 3 — Agregar Secrets en GitHub
+1. Ve a https://github.com/TU_USUARIO/TU_REPO/settings/secrets/actions
+2. Clic en "New repository secret"
+3. Agrega estos secrets:
+
+
+## disparar el DAG:
+gcloud composer environments run restaurant-composer \
+  --project=realtime-sales-pipeline \
+  --location=us-central1 \
+  dags trigger -- restaurant_data_platform
+O desde la UI de Airflow: ▶️ Trigger DAG. Después verifica:
+bq query --use_legacy_sql=false "SELECT * FROM sales_analytics.vw_sales_daily LIMIT 10"

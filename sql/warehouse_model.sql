@@ -1,18 +1,18 @@
-CREATE TABLE sales_analytics.dim_store (
+CREATE TABLE IF NOT EXISTS sales_analytics.dim_store (
     store_id INT64,
     store_name STRING
 );
 
-CREATE TABLE sales_analytics.dim_product (
+CREATE TABLE IF NOT EXISTS sales_analytics.dim_product (
     product_id INT64,
     product_name STRING
 );
 
-CREATE TABLE sales_analytics.dim_date (
+CREATE TABLE IF NOT EXISTS sales_analytics.dim_date (
     date_id DATE
 );
 
-CREATE TABLE sales_analytics.fact_sales (
+CREATE TABLE IF NOT EXISTS sales_analytics.fact_sales (
     sale_id INT64,
     store_id INT64,
     product_id INT64,
