@@ -15,10 +15,19 @@ def validate_record(record):
         if record[field] is None:
             return False
 
-    if int(record["cantidad"]) <= 0:
+        if isinstance(record[field], str) and record[field].strip() == "":
+            return False
+
+    try:
+        cantidad = int(record["cantidad"])
+        total = float(record["total"])
+    except (ValueError, TypeError):
         return False
 
-    if float(record["total"]) < 0:
+    if cantidad <= 0:
+        return False
+
+    if total < 0:
         return False
 
     return True
