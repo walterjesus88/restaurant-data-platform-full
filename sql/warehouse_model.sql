@@ -9,11 +9,11 @@ CREATE TABLE IF NOT EXISTS sales_analytics.dim_product (
 );
 
 CREATE TABLE IF NOT EXISTS sales_analytics.dim_date (
-    date_id DATE
-    EXTRACT(YEAR FROM date_id) AS year,
-    EXTRACT(MONTH FROM date_id) AS month,
-    EXTRACT(DAY FROM date_id) AS day,
-    EXTRACT(DAYOFWEEK FROM date_id) AS day_of_week
+    date_id DATE,
+    year INT64,
+    month INT64,
+    day INT64,
+    day_of_week INT64
 );
 
 CREATE TABLE IF NOT EXISTS sales_analytics.fact_sales (
