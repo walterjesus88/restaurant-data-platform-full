@@ -8,11 +8,11 @@ logging.basicConfig(level=logging.INFO)
 
 client = bigquery.Client()
 
-client.query(
-    f"TRUNCATE TABLE {DATASET}.inventory_staging"
-).result()
-
 def main():
+
+    client.query(
+        f"TRUNCATE TABLE {DATASET}.inventory_staging"
+    ).result()
 
     logging.info("Reading inventory CSV")
 

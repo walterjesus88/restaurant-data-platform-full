@@ -3,7 +3,7 @@ from google.cloud import bigquery
 import pandas as pd
 from io import BytesIO
 
-from config import PROJECT_ID, BUCKET_NAME, SALES_FILE, TABLE_SALES_STAGING
+from config import PROJECT_ID, DATASET, BUCKET_NAME, SALES_FILE, TABLE_SALES_STAGING
 
 FILE_NAME = SALES_FILE
 
@@ -15,9 +15,9 @@ bq_client = bigquery.Client()
 
 # TRUNCATE STAGING
 
-truncate_query = """
+truncate_query = f"""
 TRUNCATE TABLE
-`sales_analytics.sales_staging`
+`{PROJECT_ID}.{DATASET}.sales_staging`
 """
 
 bq_client.query(
@@ -50,10 +50,6 @@ df = df[df["total"] >= 0]
 df = df.drop_duplicates()
 
 print(df.head())
-
-# BIGQUERY
-
-bq_client = bigquery.Client()
 
 job = bq_client.load_table_from_dataframe(
     df,

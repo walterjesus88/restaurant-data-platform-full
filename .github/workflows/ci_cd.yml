@@ -48,14 +48,8 @@ jobs:
       - name: Setup GCloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Upload DAGs
+      - name: Deploy to Composer
         run: |
-          gsutil cp dags/* ${{ secrets.COMPOSER_BUCKET }}/dags/
-
-      - name: Upload SQL
-        run: |
-          gsutil cp sql/* ${{ secrets.SQL_BUCKET }}/
-
-      - name: Deploy Batch
-        run: |
-          gsutil cp batch/* ${{ secrets.BATCH_BUCKET }}/
+          gsutil -m cp -r dags/* ${{ secrets.COMPOSER_BUCKET }}/dags/
+          gsutil -m cp sql/* ${{ secrets.COMPOSER_BUCKET }}/dags/sql/
+          gsutil -m cp batch/* ${{ secrets.COMPOSER_BUCKET }}/dags/batch/
