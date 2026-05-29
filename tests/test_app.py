@@ -5,11 +5,12 @@ from unittest.mock import patch, MagicMock
 
 @pytest.fixture
 def client():
-    with patch("streaming.app.publisher") as mock_publisher:
-        mock_future = MagicMock()
-        mock_future.result.return_value = "mock-message-id"
-        mock_publisher.publish.return_value = mock_future
+    mock_publisher = MagicMock()
+    mock_future = MagicMock()
+    mock_future.result.return_value = "mock-message-id"
+    mock_publisher.publish.return_value = mock_future
 
+    with patch("streaming.app.pubsub_v1.PublisherClient", return_value=mock_publisher):
         from streaming.app import app
         app.config["TESTING"] = True
         with app.test_client() as c:

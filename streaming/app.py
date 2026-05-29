@@ -8,12 +8,19 @@ app = Flask(__name__)
 PROJECT_ID = "realtime-sales-pipeline"
 TOPIC_ID = "delivery-topic"
 
-publisher = pubsub_v1.PublisherClient()
+_publisher = None
 
-topic_path = publisher.topic_path(
-    PROJECT_ID,
-    TOPIC_ID
-)
+def _get_publisher():
+    global _publisher
+    if _publisher is None:
+        _publisher = pubsub_v1.PublisherClient()
+    return _publisher
+
+def _get_topic_path():
+    return _get_publisher().topic_path(
+        PROJECT_ID,
+        TOPIC_ID
+    )
 
 
 @app.route("/delivery", methods=["POST"])
@@ -42,8 +49,8 @@ def publish_event():
 
         message_json = json.dumps(data)
 
-        future = publisher.publish(
-            topic_path,
+        future = _get_publisher().publish(
+            _get_topic_path(),
             message_json.encode("utf-8")
         )
 
