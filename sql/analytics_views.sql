@@ -14,7 +14,8 @@ SELECT
     COUNT(*) AS transacciones,
     ROUND(SUM(f.total_amount) / COUNT(*), 2) AS ticket_promedio
 FROM sales_analytics.fact_sales f
-LEFT JOIN sales_analytics.dim_store st ON f.store_id = st.store_id
+LEFT JOIN sales_analytics.dim_store st 
+ON f.store_id = st.store_id
 GROUP BY f.date_id, st.store_name
 ORDER BY fecha DESC, venta_total DESC;
 
@@ -66,8 +67,10 @@ SELECT
     fi.stock,
     fi.date_id AS fecha
 FROM sales_analytics.fact_inventory fi
-LEFT JOIN sales_analytics.dim_store st ON fi.store_id = st.store_id
-LEFT JOIN sales_analytics.dim_product p ON fi.product_id = p.product_id
+LEFT JOIN sales_analytics.dim_store st 
+ON fi.store_id = st.store_id
+LEFT JOIN sales_analytics.dim_product p
+ON fi.product_id = p.product_id
 QUALIFY ROW_NUMBER() OVER (
     PARTITION BY fi.store_id, fi.product_id
     ORDER BY fi.date_id DESC

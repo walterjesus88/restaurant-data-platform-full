@@ -3,6 +3,7 @@ import pandas as pd
 from google.cloud import bigquery
 
 from config import PROJECT_ID, DATASET, INVENTORY_FILE, TABLE_INVENTORY_STAGING
+from transformations import validate_dataframe
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,13 +19,7 @@ def main():
 
     df = pd.read_csv(f"data/{INVENTORY_FILE}")
 
-    df.columns = [c.lower() for c in df.columns]
-
-    df = df.drop_duplicates()
-
-    df["fecha"] = pd.to_datetime(df["fecha"])
-
-    df = df[df["stock"] >= 0]
+    df = validate_dataframe(df, table_type="inventory")
 
     job = client.load_table_from_dataframe(
         df,

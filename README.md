@@ -67,3 +67,38 @@ gcloud storage cp data/inventario.csv gs://restaurant-data-bucket-walter/
 
 Push a `main` → tests → deploy automático a Composer + buckets GCS.
 Requiere `GCP_CREDENTIALS`, `COMPOSER_BUCKET`, `SQL_BUCKET`, `BATCH_BUCKET` en GitHub Secrets.
+
+## Consultas
+## Vistas analíticas
+-- Ventas diarias por tienda
+SELECT * FROM sales_analytics.vw_sales_daily ORDER BY fecha DESC LIMIT 20;
+-- Top productos más vendidos
+SELECT * FROM sales_analytics.vw_top_products LIMIT 20;
+-- Ticket promedio por tienda
+SELECT * FROM sales_analytics.vw_ticket_promedio;
+-- Resumen delivery
+SELECT * FROM sales_analytics.vw_delivery_summary ORDER BY fecha DESC LIMIT 20;
+-- Stock actual por tienda y producto
+SELECT * FROM sales_analytics.vw_inventory_current ORDER BY stock;
+-- Consolidado ventas + delivery
+SELECT * FROM sales_analytics.vw_consolidado ORDER BY fecha DESC LIMIT 20;
+## Star schema (Gold)
+-- Tabla de hechos ventas + dimensiones (denormalizado)
+SELECT * FROM sales_analytics.fact_sales ORDER BY sale_id DESC LIMIT 20;
+-- Tabla de hechos inventario + dimensiones
+SELECT * FROM sales_analytics.fact_inventory ORDER BY inventory_id DESC LIMIT 20;
+-- Dimensiones
+SELECT * FROM sales_analytics.dim_store;
+SELECT * FROM sales_analytics.dim_product;
+SELECT * FROM sales_analytics.dim_date ORDER BY date_id DESC;
+
+## Base tables (Silver)
+
+SELECT * FROM sales_analytics.sales_final ORDER BY fecha DESC LIMIT 20;
+SELECT * FROM sales_analytics.inventory_final ORDER BY fecha DESC LIMIT 20;
+SELECT * FROM sales_analytics.delivery_realtime ORDER BY created_at DESC LIMIT 20;
+
+## Staging (Bronze)
+
+SELECT * FROM sales_analytics.sales_staging LIMIT 20;
+SELECT * FROM sales_analytics.inventory_staging LIMIT 20;

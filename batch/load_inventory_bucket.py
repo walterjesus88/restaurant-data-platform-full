@@ -4,6 +4,7 @@ import pandas as pd
 from io import BytesIO
 
 from config import PROJECT_ID, DATASET, BUCKET_NAME, INVENTORY_FILE, TABLE_INVENTORY_STAGING
+from transformations import validate_dataframe
 
 FILE_NAME = INVENTORY_FILE
 
@@ -51,15 +52,9 @@ df = pd.read_csv(
     BytesIO(data)
 )
 
-df["fecha"] = pd.to_datetime( df["fecha"] ).dt.date
+df = validate_dataframe(df, table_type="inventory")
 
-# VALIDACIONES
-
-df = df.dropna()
-
-df = df[df["stock"] >= 0]
-
-df = df.drop_duplicates()
+df["fecha"] = df["fecha"].dt.date
 
 print(df.head())
 

@@ -4,6 +4,7 @@ import pandas as pd
 from io import BytesIO
 
 from config import PROJECT_ID, DATASET, BUCKET_NAME, SALES_FILE, TABLE_SALES_STAGING
+from transformations import validate_dataframe
 
 FILE_NAME = SALES_FILE
 
@@ -41,13 +42,9 @@ df = pd.read_csv(
     BytesIO(data)
 )
 
-df["fecha"] = pd.to_datetime( df["fecha"] ).dt.date
+df = validate_dataframe(df, table_type="sales")
 
-# VALIDACIONES
-
-df = df.dropna()
-df = df[df["total"] >= 0]
-df = df.drop_duplicates()
+df["fecha"] = df["fecha"].dt.date
 
 print(df.head())
 
