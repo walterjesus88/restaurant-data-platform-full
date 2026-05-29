@@ -1,5 +1,8 @@
 import os
+from dotenv import load_dotenv
 import apache_beam as beam
+
+load_dotenv()
 from apache_beam.coders import coders
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.transforms.userstate import ReadModifyWriteStateSpec
