@@ -31,5 +31,11 @@ dataflow/temp/
 # Airflow local
 airflow_local/
 
+# Agent instructions
+AGENTS.md
+
+# Power BI guide (local only)
+docs/powerbi.md
+
 # Byte-compiled
 *.egg
