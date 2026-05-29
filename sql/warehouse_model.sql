@@ -13,8 +13,16 @@ CREATE TABLE IF NOT EXISTS sales_analytics.dim_date (
     year INT64,
     month INT64,
     day INT64,
-    day_of_week INT64
+    day_of_week INT64,
+    quarter INT64,
+    month_name STRING,
+    is_weekend BOOL
 );
+
+ALTER TABLE sales_analytics.dim_date
+  ADD COLUMN IF NOT EXISTS quarter INT64,
+  ADD COLUMN IF NOT EXISTS month_name STRING,
+  ADD COLUMN IF NOT EXISTS is_weekend BOOL;
 
 CREATE TABLE IF NOT EXISTS sales_analytics.fact_sales (
     sale_id INT64,

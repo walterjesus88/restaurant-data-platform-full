@@ -20,6 +20,13 @@ erDiagram
 
     dim_date {
         date date_id PK
+        int year
+        int month
+        int day
+        int day_of_week
+        int quarter
+        string month_name
+        bool is_weekend
     }
 
     fact_sales {
@@ -50,7 +57,14 @@ CREATE TABLE sales_analytics.dim_product (
 );
 
 CREATE TABLE sales_analytics.dim_date (
-    date_id DATE
+    date_id DATE,
+    year INT64,
+    month INT64,
+    day INT64,
+    day_of_week INT64,
+    quarter INT64,
+    month_name STRING,
+    is_weekend BOOL
 );
 
 CREATE TABLE sales_analytics.fact_sales (
