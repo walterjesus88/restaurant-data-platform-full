@@ -4,6 +4,9 @@ ON T.fecha = S.fecha
 AND T.tienda = S.tienda
 AND T.producto = S.producto
 
+WHEN MATCHED THEN
+    UPDATE SET cantidad = S.cantidad, total = S.total
+
 WHEN NOT MATCHED THEN
 INSERT (
     fecha,
