@@ -164,3 +164,14 @@ gcloud composer environments run restaurant-composer \
   dags trigger -- restaurant_data_platform
 O desde la UI de Airflow: ▶️ Trigger DAG. Después verifica:
 bq query --use_legacy_sql=false "SELECT * FROM sales_analytics.vw_sales_daily LIMIT 10"
+
+
+## Arquitectura 
+Arquitectura Medallón (Bronze → Silver → Gold) sobre GCP:
+Bronze: Cloud Storage (CSV raw) + Pub/Sub (eventos streaming)
+Silver: BigQuery staging tables (datos validados y transformados)
+Gold: BigQuery star schema (dim + fact) + vistas analíticas → Power BI
+Combinada con Arquitectura Lambda (batch + streaming en paralelo):
+Batch layer: CSV → Airflow → BigQuery (procesamiento diario)
+Speed layer: Flask → Pub/Sub → Dataflow → BigQuery (tiempo real)
+Serving layer: Star schema en BigQuery consumido por Power BI

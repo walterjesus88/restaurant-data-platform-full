@@ -10,7 +10,6 @@ from datetime import datetime
 import json
 import logging
 
-
 logging.basicConfig(
     level=logging.INFO
 )
@@ -48,13 +47,9 @@ class DeduplicatePedidos(beam.DoFn):
 
 
 class ValidateEvent(beam.DoFn):
-
     def process(self, element):
-
         try:
-
             record = element
-
             required_fields = [
                 "pedido_id",
                 "estado",
@@ -63,49 +58,38 @@ class ValidateEvent(beam.DoFn):
             ]
 
             for field in required_fields:
-
                 if field not in record:
-
                     logging.error(
                         f"Missing field: {field}"
                     )
-
                     return
 
             if float(record["monto"]) < 0:
-
                 logging.error(
                     "Negative amount detected"
                 )
-
                 return
 
             logging.info(
                 f"Valid event: {record}"
             )
-
             yield record
 
         except Exception as e:
-
             logging.error(
                 f"Error processing event: {e}"
             )
 
 
 class LogInsertedRecord(beam.DoFn):
-
     def process(self, element):
-
         logging.info(
             f"Inserted into BigQuery: {element}"
         )
-
         yield element
 
 
 def run():
-
     options = PipelineOptions(
         runner="DataflowRunner",
         project=PROJECT,
@@ -120,7 +104,6 @@ def run():
     )
 
     with beam.Pipeline(options=options) as pipeline:
-
         (
             pipeline
 
@@ -169,7 +152,6 @@ def run():
                 ),
 
                 write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-
                 create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
             )
         )

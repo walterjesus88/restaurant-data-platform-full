@@ -61,14 +61,16 @@ ORDER BY fecha DESC, estado;
 -- Último inventario disponible por tienda y producto
 CREATE OR REPLACE VIEW sales_analytics.vw_inventory_current AS
 SELECT
-    tienda,
-    producto,
-    stock,
-    fecha
-FROM sales_analytics.inventory_final
+    st.store_name AS tienda,
+    p.product_name AS producto,
+    fi.stock,
+    fi.date_id AS fecha
+FROM sales_analytics.fact_inventory fi
+LEFT JOIN sales_analytics.dim_store st ON fi.store_id = st.store_id
+LEFT JOIN sales_analytics.dim_product p ON fi.product_id = p.product_id
 QUALIFY ROW_NUMBER() OVER (
-    PARTITION BY tienda, producto
-    ORDER BY fecha DESC
+    PARTITION BY fi.store_id, fi.product_id
+    ORDER BY fi.date_id DESC
 ) = 1;
 
 

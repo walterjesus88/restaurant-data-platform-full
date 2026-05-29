@@ -20,3 +20,11 @@ CREATE TABLE IF NOT EXISTS sales_analytics.fact_sales (
     total_amount FLOAT64,
     quantity INT64
 );
+
+CREATE TABLE IF NOT EXISTS sales_analytics.fact_inventory (
+    inventory_id INT64,
+    store_id INT64,
+    product_id INT64,
+    date_id DATE,
+    stock INT64
+);
