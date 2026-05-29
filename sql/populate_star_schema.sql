@@ -30,8 +30,9 @@ WHERE producto NOT IN (
 );
 
 -- Dimensión fecha (solo días con ventas)
-INSERT INTO sales_analytics.dim_date (date_id)
-SELECT DISTINCT fecha
+INSERT INTO sales_analytics.dim_date (date_id, year, month, day, day_of_week)
+SELECT DISTINCT fecha, EXTRACT(YEAR FROM fecha), EXTRACT(MONTH FROM fecha), 
+EXTRACT(DAY FROM fecha), EXTRACT(DAYOFWEEK FROM fecha)
 FROM sales_analytics.sales_final
 WHERE fecha NOT IN (
     SELECT date_id FROM sales_analytics.dim_date
