@@ -9,7 +9,6 @@ FILE_NAME = SALES_FILE
 
 TABLE_ID = TABLE_SALES_STAGING
 
-
 # BIGQUERY
 
 bq_client = bigquery.Client()
@@ -31,13 +30,11 @@ print(
 
 
 storage_client = storage.Client()
-
 bucket = storage_client.bucket(
     BUCKET_NAME
 )
 
 blob = bucket.blob(FILE_NAME)
-
 data = blob.download_as_bytes()
 
 df = pd.read_csv(
@@ -49,9 +46,7 @@ df["fecha"] = pd.to_datetime( df["fecha"] ).dt.date
 # VALIDACIONES
 
 df = df.dropna()
-
 df = df[df["total"] >= 0]
-
 df = df.drop_duplicates()
 
 print(df.head())
